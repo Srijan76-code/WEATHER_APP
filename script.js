@@ -11,7 +11,7 @@ function formatDate(date) {
 
 
     const formattedHours = hours % 12 || 12;
-    const formattedMinutes = minutes < 10 ? '0' + minutes : minutes; 
+    const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
 
     return `${day} ${month}, ${dayOfWeek}, ${formattedHours}:${formattedMinutes}${ampm}`;
 }
@@ -25,38 +25,43 @@ let formattedDate = formatDate(now);
 async function api_response(city) {
     const apiKey = "9e8dc69a1ed9f0724c0cac3268e6f021";
     const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`);
-    
-    if (!response.ok) {
-        console.error('Error fetching data:', response.statusText);
-        return;
-    }
-    
+
+
     const data = await response.json();
+    if (response.status == 404) {
 
-    document.querySelector("#d2").innerHTML=formattedDate; 
-    document.querySelector("#d3").innerHTML=""; 
+        document.querySelector(".error").style.display = "block";
+    }
+    else {
+
+        document.querySelector("#d2").innerHTML = formattedDate;
+        document.querySelector("#d3").innerHTML = "";
 
 
 
-    document.querySelector("#tempt").innerHTML=`${Math.round(data.main.temp)}`;
-    document.querySelector(".city").innerHTML=city;
+        document.querySelector("#tempt").innerHTML = `${Math.round(data.main.temp)}`;
+        document.querySelector(".city").innerHTML = city;
 
-    document.querySelector("#visibility").innerHTML=`${data.visibility} km`;
-    document.querySelector("#ws").innerHTML=`${data.wind.speed} m/s`;
-    document.querySelector("#humidity").innerHTML=`${data.main.humidity}%`;
-    document.querySelector("#pressure").innerHTML=`${data.main.pressure} mb`;
+        document.querySelector("#visibility").innerHTML = `${data.visibility} km`;
+        document.querySelector("#ws").innerHTML = `${data.wind.speed} m/s`;
+        document.querySelector("#humidity").innerHTML = `${data.main.humidity}%`;
+        document.querySelector("#pressure").innerHTML = `${data.main.pressure} mb`;
+    }
 
-    
+
+
+
+
 
 }
 
 const input = document.querySelector("#input");
 
-input.addEventListener('keydown', function(event) {
+input.addEventListener('keydown', function (event) {
     if (event.key === 'Enter') {
-        const city = input.value; 
+        const city = input.value;
         api_response(city);
-        input.value = ''; 
+        input.value = '';
     }
 });
 
